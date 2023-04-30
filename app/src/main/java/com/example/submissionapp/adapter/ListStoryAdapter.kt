@@ -32,6 +32,8 @@ class ListStoryAdapter(private val listStory : List<StoryResponseItem>): Recycle
         Glide.with(holder.itemView.context).load(photo).into(holder.binding.photoStory)
         holder.binding.userName.text = name
         holder.binding.storyTitle.text = title
+        holder.itemView.setOnClickListener{onItemClickCallback.onItemClicked(listStory[holder.adapterPosition])}
+
     }
 
     override fun getItemCount(): Int {

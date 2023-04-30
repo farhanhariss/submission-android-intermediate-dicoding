@@ -8,24 +8,16 @@ import android.view.Menu
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.submissionapp.adapter.ListStoryAdapter
-import com.example.submissionapp.data.Story
-import com.example.submissionapp.data.StoryAdapter
 import com.example.submissionapp.data.TokenPreferences
-import com.example.submissionapp.data.remote.network.ApiConfig
-import com.example.submissionapp.data.remote.response.StoryResponse
 import com.example.submissionapp.data.remote.response.StoryResponseItem
 import com.example.submissionapp.databinding.ActivityHomeBinding
 import com.example.submissionapp.ui.add_story.AddStoryActivity
 import com.example.submissionapp.ui.detail_story.DetailStoryActivity
 import com.example.submissionapp.ui.login.LoginActivity
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class HomeActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityHomeBinding
-    private lateinit var homeViewModel: HomeViewModel
     private lateinit var tokenPreferences: TokenPreferences
     private lateinit var listStory : List<StoryResponseItem>
 
@@ -59,8 +51,10 @@ class HomeActivity : AppCompatActivity() {
     private fun setupViewModel() {
         val viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
         viewModel.getAllStories(tokenPreferences.getToken())
+        Log.d(TAG, "SetupViewModel dipanggil")
         viewModel.listStory.observe(this){
             listStory ->
+            Log.d(TAG, "Data list story : $listStory")
             setStoryData(listStory)
         }
     }
@@ -73,15 +67,13 @@ class HomeActivity : AppCompatActivity() {
             val intent = Intent(this@HomeActivity, LoginActivity::class.java)
             startActivity(intent)
         }
-        else{
-            setStoryData(listStory)
-        }
     }
 
     private fun setStoryData(listStory: List<StoryResponseItem>) {
         val adapter = ListStoryAdapter(listStory)
         binding.rvStory.adapter = adapter
         binding.rvStory.layoutManager = LinearLayoutManager(this)
+        Log.d(TAG, "Recycler telah dipanggil")
         adapter.setItemClickCallback(object : ListStoryAdapter.OnItemClickCallback {
             override fun onItemClicked(data: StoryResponseItem) {
                 val intent = Intent(this@HomeActivity, DetailStoryActivity::class.java)
@@ -90,22 +82,4 @@ class HomeActivity : AppCompatActivity() {
             }
         })
     }
-
-//    private fun getStory(){
-//        val client = ApiConfig.getApiService().getAllStories(TOKEN_KEY)
-//        client.enqueue(object : Callback<StoryResponse>{
-//            override fun onResponse(call: Call<StoryResponse>, response: Response<StoryResponse>) {
-//                if(response.isSuccessful){
-//                    val responseBody = response.body()
-//                    if(responseBody != null){
-//                    }
-//                }
-//            }
-//
-//            override fun onFailure(call: Call<StoryResponse>, t: Throwable) {
-//                TODO("Not yet implemented")
-//            }
-//
-//        })
-//    }
 }

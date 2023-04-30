@@ -26,6 +26,7 @@ class HomeViewModel():ViewModel() {
             override fun onResponse(call: Call<StoryResponse>, response: Response<StoryResponse>) {
                 if(response.isSuccessful){
                     val responseBody = response.body()
+                    _listStory.value = responseBody?.listStory
 //                    _listStory.postValue(responseBody?.listStory)
                     Log.d(TAG, responseBody?.listStory.toString())
                 }
