@@ -22,13 +22,17 @@ class HomeViewModel():ViewModel() {
 
     fun getAllStories(token: String?){
         val client = ApiConfig.getApiService().getAllStories(token)
+        Log.d(TAG, "hasil variable client : $client")
         client.enqueue(object : Callback<StoryResponse>{
             override fun onResponse(call: Call<StoryResponse>, response: Response<StoryResponse>) {
                 if(response.isSuccessful){
                     val responseBody = response.body()
+                    Log.d(TAG, "hasil variable responseBody : $responseBody")
                     _listStory.value = responseBody?.listStory
-//                    _listStory.postValue(responseBody?.listStory)
+                    //_listStory.postValue(responseBody?.listStory)
                     Log.d(TAG, responseBody?.listStory.toString())
+                } else {
+                    Log.e(TAG, "onFailure: ${response.message()}")
                 }
             }
 

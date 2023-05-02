@@ -32,8 +32,8 @@ class HomeActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         tokenPreferences = TokenPreferences(this)
-        setupViewModel()
         validatePreferences()
+        setupViewModel()
         fabAction()
     }
 
@@ -51,12 +51,12 @@ class HomeActivity : AppCompatActivity() {
     private fun setupViewModel() {
         val viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
         viewModel.getAllStories(tokenPreferences.getToken())
-        Log.d(TAG, "SetupViewModel dipanggil")
         viewModel.listStory.observe(this){
             listStory ->
             Log.d(TAG, "Data list story : $listStory")
             setStoryData(listStory)
         }
+        Log.d(TAG, "SetupViewModel dipanggil")
     }
 
     private fun validatePreferences() {
