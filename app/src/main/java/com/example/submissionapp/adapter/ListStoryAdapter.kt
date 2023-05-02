@@ -28,12 +28,10 @@ class ListStoryAdapter(private val listStory : List<StoryResponseItem>): Recycle
     }
 
     override fun onBindViewHolder(holder: ListViewHolder, position: Int) {
-        val (photo, title ,name) = listStory[position]
+        val (photo, name) = listStory[position]
+        holder.binding.nameUser.text = name
         Glide.with(holder.itemView.context).load(photo).into(holder.binding.photoStory)
-        holder.binding.userName.text = name
-        holder.binding.storyTitle.text = title
         holder.itemView.setOnClickListener{onItemClickCallback.onItemClicked(listStory[holder.adapterPosition])}
-
     }
 
     override fun getItemCount(): Int {
