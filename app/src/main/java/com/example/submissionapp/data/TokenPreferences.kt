@@ -24,7 +24,7 @@ class TokenPreferences(private val context: Context){
         return sharedPref.getString(TOKEN_KEY,"")
     }
 
-    fun deleteToken(){
+    fun deleteToken() {
         sharedPref?.edit()?.remove(TOKEN_KEY)?.apply()
     }
 }
