@@ -1,9 +1,6 @@
 package com.example.submissionapp.data.remote.network
 
-import com.example.submissionapp.data.remote.response.FileUploadResponse
-import com.example.submissionapp.data.remote.response.LoginResponse
-import com.example.submissionapp.data.remote.response.RegisterResponse
-import com.example.submissionapp.data.remote.response.StoryResponse
+import com.example.submissionapp.data.remote.response.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
@@ -31,12 +28,18 @@ interface ApiService {
         @Header("Authorization") token: String?,
     ): Call<StoryResponse>
 
+    @GET("stories/{id}")
+    fun getDetailStories(
+        @Header("Authorization") token: String?,
+        @Path("id") id: String
+    ): Call<DetailStoryResponse>
+
     @Multipart
     @POST("stories")
     fun uploadStory(
         @Header("Authorization") token: String,
         @Part file: MultipartBody.Part,
-        @Field("description") description: RequestBody,
+        @Part("description") description: RequestBody,
     ) : Call<FileUploadResponse>
 
 

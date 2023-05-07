@@ -1,5 +1,6 @@
 package com.example.submissionapp.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -28,9 +29,10 @@ class ListStoryAdapter(private val listStory : List<StoryResponseItem>): Recycle
     }
 
     override fun onBindViewHolder(holder: ListViewHolder, position: Int) {
-        val (photo, name) = listStory[position]
+        val (photoUrl, name) = listStory[position]
+        Glide.with(holder.itemView.context).load(photoUrl).into(holder.binding.photoStory)
+        Log.d("ListAdapter", "isi variabel $photoUrl")
         holder.binding.nameUser.text = name
-        Glide.with(holder.itemView.context).load(photo).into(holder.binding.photoStory)
         holder.itemView.setOnClickListener{onItemClickCallback.onItemClicked(listStory[holder.adapterPosition])}
     }
 

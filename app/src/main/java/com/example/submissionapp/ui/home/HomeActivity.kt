@@ -19,7 +19,6 @@ class HomeActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityHomeBinding
     private lateinit var tokenPreferences: TokenPreferences
-    private lateinit var listStory : List<StoryResponseItem>
 
     companion object{
         private const val TAG = "HomeActivity"
@@ -77,7 +76,7 @@ class HomeActivity : AppCompatActivity() {
         adapter.setItemClickCallback(object : ListStoryAdapter.OnItemClickCallback {
             override fun onItemClicked(data: StoryResponseItem) {
                 val intent = Intent(this@HomeActivity, DetailStoryActivity::class.java)
-                intent.putExtra(DetailStoryActivity.KEY_USER, data)
+                intent.putExtra(DetailStoryActivity.ID_USER, data.id)
                 startActivity(intent)
             }
         })

@@ -19,7 +19,7 @@ android {
     }
 
     defaultConfig {
-        buildConfigField("String","KEY",'"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyLTMxS1l4Tnk5ZUFtQkFvWFUiLCJpYXQiOjE2ODEyMDc4NzJ9.A_2p_cJ4QQbnNIMQ_lDROQE6IdAJjDo544b79HWZKI4"')
+        buildConfigField("String","KEY",'"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyLTMxS1l4Tnk5ZUFtQkFvWFUiLCJpYXQiOjE2ODI3Nzc0OTN9.b3RK2oCs6hL17blPcyJc1R---HxUCZnHViaDQmLuWc0"')
         applicationId "com.example.submissionapp"
         minSdk 24
         targetSdk 33

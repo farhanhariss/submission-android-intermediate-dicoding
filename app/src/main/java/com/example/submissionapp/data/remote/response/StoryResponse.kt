@@ -20,18 +20,26 @@ data class StoryResponse(
 	val message: String
 ) : Parcelable
 
+data class DetailStoryResponse(
+	@SerializedName("error")
+	val error: Boolean,
+	@SerializedName("message")
+	val message: String,
+	@SerializedName("story")
+	val story: StoryResponseItem
+)
 
 @Parcelize
 data class StoryResponseItem(
 
-	@field:SerializedName("id")
-	val id: String,
+	@field:SerializedName("photoUrl")
+	val photoUrl: String,
 
 	@field:SerializedName("name")
 	val name: String,
 
-	@field:SerializedName("photoUrl")
-	val photoUrl: String,
+	@field:SerializedName("id")
+	val id: String,
 
 	@field:SerializedName("createdAt")
 	val createdAt: String,

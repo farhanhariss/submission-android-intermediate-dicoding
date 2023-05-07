@@ -16,20 +16,20 @@ class HomeViewModel():ViewModel() {
     private val _listStory = MutableLiveData<List<StoryResponseItem>>()
     val listStory: LiveData<List<StoryResponseItem>> = _listStory
 
+
     companion object{
         const val  TAG = "HomeViewModel"
     }
 
     fun getAllStories(token: String?){
-        val client = ApiConfig.getApiService().getAllStories(token)
+        val client = ApiConfig.getApiService().getAllStories("Bearer $token")
         Log.d(TAG, "hasil variable client : $client")
         client.enqueue(object : Callback<StoryResponse>{
             override fun onResponse(call: Call<StoryResponse>, response: Response<StoryResponse>) {
                 if(response.isSuccessful){
                     val responseBody = response.body()
                     Log.d(TAG, "hasil variable responseBody : $responseBody")
-                    _listStory.value = responseBody?.listStory
-                    //_listStory.postValue(responseBody?.listStory)
+                    _listStory.postValue(responseBody?.listStory)
                     Log.d(TAG, responseBody?.listStory.toString())
                 } else {
                     Log.e(TAG, "onFailure: ${response.message()}")
