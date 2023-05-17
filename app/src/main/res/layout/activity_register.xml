@@ -6,14 +6,15 @@
     android:layout_height="match_parent"
     tools:context=".ui.register.RegisterActivity">
 
-<!--    <ProgressBar-->
-<!--        android:id="@+id/progress_bar"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent" />-->
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -25,12 +26,14 @@
         tools:layout_editor_absoluteX="153dp">
 
         <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/photo_register"
             android:layout_width="180dp"
             android:layout_height="180dp"
             android:src="@drawable/story_pic"
             android:layout_gravity="center"/>
 
         <TextView
+            android:id="@+id/register_greet"
             android:layout_marginTop="50dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -41,6 +44,7 @@
             />
 
         <TextView
+            android:id="@+id/tv_username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/user_name"
@@ -58,9 +62,10 @@
             android:layout_marginHorizontal="24dp"/>
 
         <TextView
+            android:id="@+id/tv_email"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/username"
+            android:text="@string/email"
             android:layout_marginTop="20dp"
             android:fontFamily="@font/montserrat_semibold"
             android:layout_marginStart="24dp"
@@ -74,6 +79,7 @@
             android:layout_marginHorizontal="24dp"/>
 
         <TextView
+            android:id="@+id/tv_password"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/password"
@@ -87,6 +93,7 @@
             android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:inputType="textPassword"
             android:layout_marginHorizontal="24dp"/>
 
         <com.example.submissionapp.customview.Button
