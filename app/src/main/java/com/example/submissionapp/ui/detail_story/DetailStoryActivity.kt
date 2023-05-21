@@ -2,6 +2,7 @@ package com.example.submissionapp.ui.detail_story
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.example.submissionapp.R
@@ -28,6 +29,8 @@ class DetailStoryActivity : AppCompatActivity() {
 
         tokenPreferences = TokenPreferences(this)
 
+        supportActionBar?.setTitle("Detail Story")
+
         val getId = intent.getStringExtra(ID_USER)
         if (getId == null){
             finish()
@@ -39,12 +42,18 @@ class DetailStoryActivity : AppCompatActivity() {
     private fun setDetailStory(id:String){
         //obtain viewmodel
         detailViewModel = ViewModelProvider(this).get(DetailViewModel::class.java)
+        detailViewModel.isLoading.observe(this){showLoading(it)}
         detailViewModel.getDetailStory(tokenPreferences.getToken(),id)
         detailViewModel.detailStory.observe(this){DetailStoryResponse ->
+            binding.tvUsername.text = DetailStoryResponse.name
             binding.tvTextStory.text = DetailStoryResponse.description
             Glide.with(this)
                 .load(DetailStoryResponse.photoUrl)
                 .into(binding.imgDetailStory)
         }
+    }
+
+    private fun showLoading(isLoading : Boolean){
+        binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 }

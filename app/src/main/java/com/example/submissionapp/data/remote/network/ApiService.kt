@@ -23,10 +23,17 @@ interface ApiService {
         @Field("password") password: String
     ): Call<LoginResponse>
 
+//    @GET("stories")
+//    fun getAllStories(
+//        @Header("Authorization") token: String?,
+//    ): Call<StoryResponse>
+
     @GET("stories")
-    fun getAllStories(
+    fun getPagingStory(
         @Header("Authorization") token: String?,
-    ): Call<StoryResponse>
+        @Query("page")page: Int,
+        @Query("size")size: Int
+    ) : ListStoryResponse
 
     @GET("stories/{id}")
     fun getDetailStories(
@@ -41,6 +48,12 @@ interface ApiService {
         @Part file: MultipartBody.Part,
         @Part("description") description: RequestBody,
     ) : Call<FileUploadResponse>
+
+
+    @GET("stories?location=1")
+    fun getAllStoriesAndLocation(
+        @Header("Authorization") token: String
+    ) : Call<StoryResponse>
 
 
 }

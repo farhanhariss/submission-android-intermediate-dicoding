@@ -13,4 +13,6 @@
     <string name="camera">Camera</string>
     <string name="gallery">Gallery</string>
     <string name="upload">Upload</string>
+    <string name="title_activity_maps">MapsActivity</string>
+    <string name="retry">Retry</string>
 </resources>

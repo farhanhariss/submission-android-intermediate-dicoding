@@ -1,19 +1,18 @@
 package com.example.submissionapp.ui.login
 
+import android.animation.Animator
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
-import com.example.submissionapp.R
-import com.example.submissionapp.customview.Button
-import com.example.submissionapp.customview.MyEditText
 import com.example.submissionapp.data.TokenPreferences
-import com.example.submissionapp.ui.register.RegisterActivity
 import com.example.submissionapp.databinding.ActivityLoginBinding
+import com.example.submissionapp.ui.register.RegisterActivity
 
 class LoginActivity : AppCompatActivity() {
 
@@ -26,11 +25,13 @@ class LoginActivity : AppCompatActivity() {
         supportActionBar?.hide()
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        playAnimation()
         setMyButtonEnable()
 
         //obtain viewmodel
         val tokenPreferences = TokenPreferences(this)
         loginViewModel = ViewModelProvider(this).get(LoginViewModel::class.java)
+        loginViewModel.isLoading.observe(this){showLoading(it)}
 
 
         binding.editTextLoginUsername.addTextChangedListener(object : TextWatcher{
@@ -74,6 +75,42 @@ class LoginActivity : AppCompatActivity() {
     private fun setMyButtonEnable() {
         val resultUsername= binding.editTextLoginUsername.text
         val resultPassword = binding.editTextLoginPassword.text
-        binding.btnLogin.isEnabled = resultPassword != null && resultPassword.toString().isNotEmpty() && resultUsername != null && resultUsername.toString().isNotEmpty()
+        val charPassword : Int = resultPassword!!.length
+        binding.btnLogin.isEnabled = charPassword >= 8 && resultPassword != null && resultPassword.toString().isNotEmpty() && resultUsername != null && resultUsername.toString().isNotEmpty()
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finishAffinity()
+    }
+
+    private fun showLoading(isLoading : Boolean){
+        binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+    }
+
+    private fun playAnimation(){
+        ObjectAnimator.ofFloat(binding.loginPicture, View.TRANSLATION_X, -30f, 30f).apply {
+            duration = 6000
+            repeatCount = ObjectAnimator.INFINITE
+            repeatMode = ObjectAnimator.REVERSE
+        }.start()
+
+        val greetLog = ObjectAnimator.ofFloat(binding.loginGreeting,View.ALPHA, 1f).setDuration(500)
+        val tvEmail = ObjectAnimator.ofFloat(binding.tvLoginName,View.ALPHA, 1f).setDuration(500)
+        val edEmail = ObjectAnimator.ofFloat(binding.editTextLoginUsername,View.ALPHA, 1f).setDuration(500)
+        val tvPassword = ObjectAnimator.ofFloat(binding.tvLoginPassword,View.ALPHA, 1f).setDuration(500)
+        val edPassword = ObjectAnimator.ofFloat(binding.editTextLoginPassword,View.ALPHA, 1f).setDuration(500)
+        val btnLogin = ObjectAnimator.ofFloat(binding.btnLogin,View.ALPHA, 1f).setDuration(500)
+        val linearLayout = ObjectAnimator.ofFloat(binding.linearLayout,View.ALPHA, 1f).setDuration(500)
+
+
+        val together = AnimatorSet().apply {
+            playTogether(tvEmail,edEmail,tvPassword,edPassword)
+        }
+
+        AnimatorSet().apply {
+            playSequentially(greetLog,together, btnLogin, linearLayout)
+            start()
+        }
     }
 }

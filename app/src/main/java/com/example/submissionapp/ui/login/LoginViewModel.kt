@@ -15,35 +15,39 @@ import retrofit2.Response
 
 class LoginViewModel() : ViewModel() {
 
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> = _isLoading
+
     companion object{
         const val TAG = "LoginViewModel"
     }
 
 
     fun checkUserKey(username: String, password:String, activity: LoginActivity,tokenPref : TokenPreferences){
-//        _isLoading.value = true
+        _isLoading.value = false
         val client = ApiConfig.getApiService().loginUser(username,password)
         client.enqueue(object : Callback<LoginResponse> {
-            override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
-//                _isLoading.value = false
+            override fun onResponse(
+                call: Call<LoginResponse>,
+                response: Response<LoginResponse>) {
+                _isLoading.value = false
                 if(response.isSuccessful){
                     val responseBody = response.body()
                     if (responseBody != null){
                         //save token di preferences
                         tokenPref.saveToken(responseBody.loginResult)
                         val intent = Intent(activity,HomeActivity::class.java)
-                        activity.finish()
                         activity.startActivity(intent)
+                        activity.finish()
                         Log.e(TAG, "Berhasil melakukan login!")
                     }
                 }else{
-//                    _isLoading.value = false
                     Log.e(TAG, "OnFailure : ${response.message()}, Maaf username serta password yang Anda input salah!")
                 }
             }
 
             override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-//                _isLoading.value = false
+                _isLoading.value = false
                 Log.e(TAG, "OnFailure : ${t.message}, No Response")
             }
         })

@@ -14,9 +14,9 @@ import com.example.submissionapp.data.remote.network.ApiConfig
 import com.example.submissionapp.data.remote.response.FileUploadResponse
 import com.example.submissionapp.databinding.ActivityAddStoryBinding
 import com.example.submissionapp.ui.home.HomeActivity
-import com.example.submissionapp.ui.home.HomeViewModel
 import com.example.submissionapp.utils.convUriToFile
 import com.example.submissionapp.utils.createTemporaryFile
+import com.example.submissionapp.utils.reduceFileImage
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -32,8 +32,7 @@ class AddStoryActivity : AppCompatActivity() {
     private lateinit var binding : ActivityAddStoryBinding
     private lateinit var currPhotoPath : String
     private lateinit var tokenPreferences: TokenPreferences
-
-    private var getFile: File? = null
+    private lateinit var getFile: File
 
     companion object{
         const val TAG = "AddStoryActivity"
@@ -43,10 +42,11 @@ class AddStoryActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-
-
         binding = ActivityAddStoryBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        supportActionBar?.setTitle("Add Story")
+
         tokenPreferences = TokenPreferences(this)
 
         //Action when click camera button
@@ -62,8 +62,6 @@ class AddStoryActivity : AppCompatActivity() {
         //Action when click the upload button
         binding.btnUpload.setOnClickListener {
             addStory(tokenPreferences.getToken())
-            startActivity(Intent(this,HomeActivity::class.java))
-            finish()
         }
     }
 
@@ -117,15 +115,17 @@ class AddStoryActivity : AppCompatActivity() {
     }
 
     private fun addStory(token:String?){
+
+
         if (getFile != null){
-            val file = getFile
+            val file = reduceFileImage(getFile)
             val descriptionText = binding.editTextInputDesc.text.toString()
             val description = descriptionText.toRequestBody("text/plain".toMediaType())
-            val requestImageFile = file?.asRequestBody("image/jpeg".toMediaTypeOrNull())
+            val requestImageFile = file.asRequestBody("image/jpeg".toMediaTypeOrNull())
             val imageMultipart: MultipartBody.Part = MultipartBody.Part.createFormData(
                 "photo",
-                file?.name,
-                requestImageFile!!
+                file.name,
+                requestImageFile
             )
 
             val client = ApiConfig.getApiService().uploadStory("Bearer $token",imageMultipart,description)
@@ -137,16 +137,20 @@ class AddStoryActivity : AppCompatActivity() {
                 ) {
                     if(response.isSuccessful){
                         Log.d(TAG,"Successful : Story berhasil diupload")
-                    }else {
-                        Log.e(TAG, "onFailure: Story gagal diupload")
+                        val intent = Intent(this@AddStoryActivity,HomeActivity::class.java)
+                        startActivity(intent)
+                        finish()
+                    }
+                    else {
+                        Log.e(TAG, "Error Story gagal diupload")
+                        Log.e(TAG,response.message())
                     }
                 }
 
+
                 override fun onFailure(call: Call<FileUploadResponse>, t: Throwable) {
                     Log.d(TAG,t.message.toString())
-                    Log.d(TAG,"Error : Gatau kenapa")
                 }
-
             })
         }
     }
