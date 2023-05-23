@@ -7,23 +7,18 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import androidx.activity.viewModels
 import androidx.lifecycle.ViewModelProvider
-import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.submissionapp.R
 import com.example.submissionapp.adapter.ListPagingAdapter
-import com.example.submissionapp.adapter.ListStoryAdapter
 import com.example.submissionapp.adapter.LoadingStateAdapter
-import com.example.submissionapp.data.Story
 import com.example.submissionapp.data.TokenPreferences
 import com.example.submissionapp.data.database.StoryDatabase
 import com.example.submissionapp.data.paging.StoryRepository
+import com.example.submissionapp.data.remote.network.ApiConfig
 import com.example.submissionapp.data.remote.network.ApiService
-import com.example.submissionapp.data.remote.response.StoryResponseItem
 import com.example.submissionapp.databinding.ActivityHomeBinding
 import com.example.submissionapp.ui.add_story.AddStoryActivity
-import com.example.submissionapp.ui.detail_story.DetailStoryActivity
 import com.example.submissionapp.ui.login.LoginActivity
 import com.example.submissionapp.ui.map.MapsActivity
 
@@ -51,6 +46,7 @@ class HomeActivity : AppCompatActivity() {
         val context = applicationContext
         tokenPreferences = TokenPreferences(this)
         storyDatabase = StoryDatabase.getDatabase(context)
+        apiService = ApiConfig.getApiService()
 
         validatePreferences()
         setupViewModel()
@@ -97,6 +93,7 @@ class HomeActivity : AppCompatActivity() {
         val viewmodel = ViewModelProvider(this, viewModelFactory).get(HomeViewModel::class.java)
         viewmodel.isLoading.observe(this){showLoading(it)}
         viewmodel.story.observe(this){
+            Log.d("HomeActivity", "data story : ${viewmodel.story}")
             adapter.submitData(lifecycle,it)
         }
     }
@@ -125,6 +122,7 @@ class HomeActivity : AppCompatActivity() {
 //        })
 
         binding.apply {
+            adapter = ListPagingAdapter()
             rvStory.layoutManager = LinearLayoutManager(this@HomeActivity)
             rvStory.setHasFixedSize(true)
             rvStory.adapter = adapter.withLoadStateFooter(
