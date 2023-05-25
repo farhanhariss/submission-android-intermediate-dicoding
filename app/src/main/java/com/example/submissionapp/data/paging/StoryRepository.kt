@@ -5,12 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.paging.*
 import com.example.submissionapp.data.StoryRemoteMediator
 import com.example.submissionapp.data.TokenPreferences
-import com.example.submissionapp.data.database.StoryDatabase
+import com.example.submissionapp.data.room.StoryDatabase
 import com.example.submissionapp.data.remote.network.ApiService
 import com.example.submissionapp.data.remote.response.StoryResponseItem
-import javax.inject.Inject
 
-class StoryRepository @Inject constructor(
+class StoryRepository(
     private val storyDatabase: StoryDatabase,
     private val apiService: ApiService,
     private val tokenPreferences: TokenPreferences
@@ -23,7 +22,7 @@ class StoryRepository @Inject constructor(
     fun getStories(): LiveData<PagingData<StoryResponseItem>> {
         return Pager(
             config = PagingConfig(
-                pageSize = 5
+                pageSize = 10
             ),
             remoteMediator = StoryRemoteMediator(storyDatabase,apiService,tokenPreferences),
             pagingSourceFactory = {

@@ -1,4 +1,4 @@
-package com.example.submissionapp.data.database
+package com.example.submissionapp.data.room
 
 import android.content.Context
 import androidx.room.Database
@@ -8,7 +8,7 @@ import com.example.submissionapp.data.remote.response.StoryResponseItem
 
 @Database(
     entities = [StoryResponseItem::class, RemoteKeys::class],
-    version = 2,
+    version = 1,
     exportSchema = false
 )
 
@@ -23,14 +23,15 @@ abstract class StoryDatabase : RoomDatabase() {
 
         @JvmStatic
         fun getDatabase(context: Context): StoryDatabase {
-            if (INSTANCE == null) {
-                synchronized(StoryDatabase::class.java) {
-                    INSTANCE = Room.databaseBuilder(context.applicationContext,
-                        StoryDatabase::class.java, "note_database")
-                        .build()
-                }
+            return INSTANCE ?: synchronized(this) {
+                INSTANCE ?: Room.databaseBuilder(
+                    context.applicationContext,
+                    StoryDatabase::class.java, "story_database"
+                )
+                    .fallbackToDestructiveMigration()
+                    .build()
+                    .also { INSTANCE = it }
             }
-            return INSTANCE as StoryDatabase
         }
     }
 }

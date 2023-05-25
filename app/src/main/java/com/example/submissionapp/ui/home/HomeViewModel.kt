@@ -1,5 +1,6 @@
 package com.example.submissionapp.ui.home
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -8,6 +9,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.submissionapp.data.paging.StoryRepository
 import com.example.submissionapp.data.remote.response.StoryResponseItem
+import com.example.submissionapp.di.Injection
 
 class HomeViewModel (repository: StoryRepository) :ViewModel() {
     val isLoading: LiveData<Boolean> = repository.isLoading
@@ -52,11 +54,12 @@ class HomeViewModel (repository: StoryRepository) :ViewModel() {
 
 }
 
-class MyViewModelFactory(private val repository: StoryRepository) : ViewModelProvider.Factory {
+class ViewModelFactory(private val context: Context) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(HomeViewModel::class.java)) {
-            return HomeViewModel(repository) as T
+            @Suppress("UNCHECKED_CAST")
+            return HomeViewModel(Injection.provideRepository(context)) as T
         }
-        throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.canonicalName}")
+        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

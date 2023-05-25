@@ -7,14 +7,13 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import androidx.lifecycle.ViewModelProvider
+import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.submissionapp.R
 import com.example.submissionapp.adapter.ListPagingAdapter
 import com.example.submissionapp.adapter.LoadingStateAdapter
 import com.example.submissionapp.data.TokenPreferences
-import com.example.submissionapp.data.database.StoryDatabase
-import com.example.submissionapp.data.paging.StoryRepository
+import com.example.submissionapp.data.room.StoryDatabase
 import com.example.submissionapp.data.remote.network.ApiConfig
 import com.example.submissionapp.data.remote.network.ApiService
 import com.example.submissionapp.databinding.ActivityHomeBinding
@@ -28,10 +27,13 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var tokenPreferences: TokenPreferences
     private lateinit var storyDatabase: StoryDatabase
     private lateinit var apiService: ApiService
-    private lateinit var adapter : ListPagingAdapter
+    private lateinit var adapter: ListPagingAdapter
+    private val homeViewModel: HomeViewModel by viewModels {
+        ViewModelFactory(this)
+    }
 
 
-    companion object{
+    companion object {
         private const val TAG = "HomeActivity"
         private var TOKEN_KEY = ""
     }
@@ -50,7 +52,6 @@ class HomeActivity : AppCompatActivity() {
 
         validatePreferences()
         setupViewModel()
-        setStoryData()
         fabAction()
     }
 
@@ -60,47 +61,53 @@ class HomeActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-         return when (item.itemId) {
-             R.id.menu_logout -> {
-                 tokenPreferences.deleteToken()
-                 Log.d(TAG, "token sudah dihapus")
-                 Log.d(TAG, "token saat ini adalah : $TOKEN_KEY")
-                 startActivity(Intent(this, LoginActivity::class.java))
-                 finish()
-                 true
-             }
-             R.id.menu_map ->{
-                 val intent = Intent(this@HomeActivity, MapsActivity::class.java)
-                 startActivity(intent)
-                 finish()
+        return when (item.itemId) {
+            R.id.menu_logout -> {
+                tokenPreferences.deleteToken()
+                Log.d(TAG, "token sudah dihapus")
+                Log.d(TAG, "token saat ini adalah : $TOKEN_KEY")
+                startActivity(Intent(this, LoginActivity::class.java))
+                finish()
                 true
-             }else ->{
+            }
+            R.id.menu_map -> {
+                val intent = Intent(this@HomeActivity, MapsActivity::class.java)
+                startActivity(intent)
+                finish()
+                true
+            }
+            else -> {
                 return super.onOptionsItemSelected(item)
             }
         }
     }
 
-    private fun fabAction(){
-        binding.fabAddStory.setOnClickListener{
+    private fun fabAction() {
+        binding.fabAddStory.setOnClickListener {
             val intent = Intent(this@HomeActivity, AddStoryActivity::class.java)
             startActivity(intent)
         }
     }
 
     private fun setupViewModel() {
-        val repository = StoryRepository(storyDatabase,apiService,tokenPreferences)
-        val viewModelFactory = MyViewModelFactory(repository)
-        val viewmodel = ViewModelProvider(this, viewModelFactory).get(HomeViewModel::class.java)
-        viewmodel.isLoading.observe(this){showLoading(it)}
-        viewmodel.story.observe(this){
-            Log.d("HomeActivity", "data story : ${viewmodel.story}")
-            adapter.submitData(lifecycle,it)
+        adapter = ListPagingAdapter()
+        binding.rvStory.layoutManager = LinearLayoutManager(this@HomeActivity)
+        binding.rvStory.adapter = adapter.withLoadStateFooter(
+            footer = LoadingStateAdapter {
+                adapter.retry()
+            }
+        )
+        homeViewModel.isLoading.observe(this) { showLoading(it) }
+        homeViewModel.story.observe(this) {
+            Log.d("HomeActivity", "data story : ${homeViewModel.story}")
+            adapter.submitData(lifecycle, it)
         }
+
     }
 
     private fun validatePreferences() {
         TOKEN_KEY = tokenPreferences.getToken().toString()
-        Log.i(TAG,"Validate preferences dipanggil. token adalah : ${TOKEN_KEY}")
+        Log.i(TAG, "Validate preferences dipanggil. token adalah : ${TOKEN_KEY}")
         if (TOKEN_KEY == "") {
             Log.d(TAG, "User belum login")
             val intent = Intent(this@HomeActivity, LoginActivity::class.java)
@@ -108,37 +115,38 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 
-    private fun setStoryData() {
-//        val adapter = ListStoryAdapter(listStory)
-//        binding.rvStory.adapter = adapter
-//        binding.rvStory.layoutManager = LinearLayoutManager(this)
-//        Log.d(TAG, "Recycler telah dipanggil")
-//        adapter.setItemClickCallback(object : ListStoryAdapter.OnItemClickCallback {
-//            override fun onItemClicked(data: StoryResponseItem) {
-//                val intent = Intent(this@HomeActivity, DetailStoryActivity::class.java)
-//                intent.putExtra(DetailStoryActivity.ID_USER, data.id)
-//                startActivity(intent)
-//            }
-//        })
-
-        binding.apply {
-            adapter = ListPagingAdapter()
-            rvStory.layoutManager = LinearLayoutManager(this@HomeActivity)
-            rvStory.setHasFixedSize(true)
-            rvStory.adapter = adapter.withLoadStateFooter(
-                footer = LoadingStateAdapter{
-                    adapter.retry()
-                }
-            )
-            binding.rvStory.layoutManager = LinearLayoutManager(this@HomeActivity)
-        }
-    }
+//    private fun setStoryData() {
+////        val adapter = ListStoryAdapter(listStory)
+////        binding.rvStory.adapter = adapter
+////        binding.rvStory.layoutManager = LinearLayoutManager(this)
+////        Log.d(TAG, "Recycler telah dipanggil")
+////        adapter.setItemClickCallback(object : ListStoryAdapter.OnItemClickCallback {
+////            override fun onItemClicked(data: StoryResponseItem) {
+////                val intent = Intent(this@HomeActivity, DetailStoryActivity::class.java)
+////                intent.putExtra(DetailStoryActivity.ID_USER, data.id)
+////                startActivity(intent)
+////            }
+////        })
+//
+//        binding.apply {
+//            adapter = ListPagingAdapter()
+//            rvStory.layoutManager = LinearLayoutManager(this@HomeActivity)
+//            rvStory.setHasFixedSize(true)
+//            rvStory.adapter = adapter.withLoadStateFooter(
+//                footer = LoadingStateAdapter{
+//                    adapter.retry()
+//                }
+//            )
+//            binding.rvStory.layoutManager = LinearLayoutManager(this@HomeActivity)
+//        }
+//    }
 
     override fun onBackPressed() {
         super.onBackPressed()
         finishAffinity()
     }
-    private fun showLoading(isLoading : Boolean){
+
+    private fun showLoading(isLoading: Boolean) {
         binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 }

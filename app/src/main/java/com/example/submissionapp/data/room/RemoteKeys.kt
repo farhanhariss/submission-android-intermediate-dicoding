@@ -1,10 +1,10 @@
-package com.example.submissionapp.data.database
+package com.example.submissionapp.data.room
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "remote_keys")
-class RemoteKeys (
+data class RemoteKeys (
     @PrimaryKey
     val id : String,
     val prevKey : Int?,

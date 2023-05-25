@@ -3,13 +3,10 @@ package com.example.submissionapp.ui.map
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
 import com.example.submissionapp.R
 import com.example.submissionapp.data.TokenPreferences
-import com.example.submissionapp.data.remote.response.StoryResponse
 import com.example.submissionapp.data.remote.response.StoryResponseItem
 import com.example.submissionapp.databinding.ActivityMapsBinding
-import com.example.submissionapp.ui.home.HomeViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback

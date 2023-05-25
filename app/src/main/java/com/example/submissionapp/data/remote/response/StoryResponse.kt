@@ -9,14 +9,15 @@ import com.google.gson.annotations.SerializedName
 
 @Parcelize
 data class StoryResponse(
-	@field:SerializedName("listStory")
-	val listStory: List<StoryResponseItem>,
 
 	@field:SerializedName("error")
 	val error: Boolean,
 
 	@field:SerializedName("message")
-	val message: String
+	val message: String,
+
+	@field:SerializedName("listStory")
+	val listStory: List<StoryResponseItem>
 
 ) : Parcelable
 
@@ -32,9 +33,10 @@ data class DetailStoryResponse(
 )
 
 @Parcelize
-@Entity(tableName = "story")
+@Entity(tableName = "story_database")
 data class StoryResponseItem(
 
+	@ColumnInfo
 	@field:SerializedName("photoUrl")
 	val photoUrl: String,
 
@@ -45,6 +47,7 @@ data class StoryResponseItem(
 	@field:SerializedName("id")
 	val id: String,
 
+	@ColumnInfo
 	@field:SerializedName("createdAt")
 	val createdAt: String,
 

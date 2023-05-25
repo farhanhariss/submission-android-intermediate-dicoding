@@ -5,12 +5,8 @@ import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
-import com.example.submissionapp.R
 import com.example.submissionapp.data.TokenPreferences
-import com.example.submissionapp.data.remote.response.DetailStoryResponse
-import com.example.submissionapp.data.remote.response.StoryResponseItem
 import com.example.submissionapp.databinding.ActivityDetailStoryBinding
-import com.example.submissionapp.ui.login.LoginViewModel
 
 class DetailStoryActivity : AppCompatActivity() {
 
